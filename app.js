@@ -1,3 +1,5 @@
+require('./utils');
+
 const Botkit = require('botkit');
 const fs = require('fs');
 const logger = require('morgan');
@@ -78,19 +80,28 @@ controller.on('slash_command', (bot, message) => {
 
   bot.res.send(200, '');
 
-  if(RobinBot.exclamationsByLetter.hasOwnProperty(message.text)) {
-    let exclamations = RobinBot.exclamationsByLetter[message.text];
+  let msg = message.text.toUpperCase();
+  let reply = {};
 
-    let reply = 'Holy ' + exclamations[Math.floor(Math.random() * exclamations.length)] + '!';
-    bot.replyPublicDelayed(message, reply);
+  if(RobinBot.exclamationsByLetter.hasOwnProperty(msg)) {
+    reply.public = 'Holy ' + RobinBot.exclamationsByLetter[msg]._randomItem() + '!';
 
-  } else if(message.text.length === 0) {
-    let reply = 'Holy ' + RobinBot.exclamations[Math.floor(Math.random() * RobinBot.exclamations.length)] + '!';
-    bot.replyPublicDelayed(message, reply);
+  } else if(msg.length === 0) {
+    reply.public = 'Holy ' + RobinBot.exclamations._randomItem() + '!';
+
+  } else if(msg._isSingleLetter()) {
+    reply.private = 'Holy Try Again! I don\'t have any phrases that start with ' + msg + '!';
 
   } else {
-    bot.replyPrivateDelayed(message, 'Holy Try Again! Send an empty message or A-Z!');
+    reply.private = 'Holy Try Again! Send an empty message or A-Z!';
+  }
 
+  if(reply.public) {
+    bot.replyPublicDelayed(message, reply.public);
+  }
+
+  if(reply.private) {
+    bot.replyPrivateDelayed(message, reply.private);
   }
 
 });
