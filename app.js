@@ -5,7 +5,8 @@ const fs = require('fs');
 const logger = require('morgan');
 
 const RobinBot = {
-  exclamationsByLetter: {}
+  exclamationsByLetter: {},
+  prankedUsers: {}
 };
 
 try {
@@ -93,7 +94,25 @@ controller.on('slash_command', (bot, message) => {
     reply.private = 'Holy Try Again! I don\'t have any phrases that start with ' + msg + '!';
 
   } else {
-    reply.private = 'Holy Try Again! Send an empty message or A-Z!';
+    let splitMsg = msg.split(' ');
+    let pranked = splitMsg[1] ? splitMsg[1].replace('@', '').toLowerCase() : '';
+
+    console.log('PRANKEDMSG???', splitMsg);
+
+    if(splitMsg[0] === 'PRANK' && splitMsg[1]) {
+      if(!RobinBot.prankedUsers.hasOwnProperty(pranked)) {
+        RobinBot.prankedUsers[pranked] = {
+          lastPrankTime: 0,
+          lastPrankMessage: ''
+        };
+      }
+
+    } else if(splitMsg[0] === 'FORGIVE' && splitMsg[1]) {
+      delete RobinBot.prankedUsers[pranked];
+
+    } else {
+      reply.private = 'Holy Try Again! Send an empty message or A-Z!';
+    }
   }
 
   if(reply.public) {

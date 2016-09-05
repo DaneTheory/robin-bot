@@ -12,7 +12,8 @@ const BotKitHelper =  {
 
       bot.api.users.list({}, (err, userList) => {
         if(err) {
-          return reject(new Error('Could not retrieve user list.', err));
+          console.error('Could not retrieve user list.');
+          return reject(new Error(err));
         }
 
         this._memberListCache = userList.members;
@@ -22,13 +23,13 @@ const BotKitHelper =  {
     });
   },
 
-  getMemberByName(name) {
+  getPrankedMembers(prankedMemberList) {
     return this.getMembers().then((members) => {
       let filteredMembers = members.filter((member) => {
-        return member.name === name;
+        return prankedMemberList.hasOwnProperty(member.name);
       });
 
-      return filteredMembers.length ? filteredMembers[0] : null;
+      return filteredMembers;
 
     }, (err) => console.error(err));
   }
