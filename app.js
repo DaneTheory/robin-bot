@@ -21,7 +21,7 @@ try {
 const logFormat = ':remote-addr - :remote-user [:date] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time ms';
 
 const controller = Botkit.slackbot({
-  debug: true,
+  debug: false,
   json_file_store: './data/storage.json'
 });
 
@@ -105,3 +105,6 @@ controller.on('slash_command', (bot, message) => {
   }
 
 });
+
+module.exports = { controller, bot, RobinBot };
+require('./prank.js');
