@@ -1,7 +1,6 @@
-require('./utils');
+const { Utils } = require('./utils');
 const { controller, bot, RobinBot } = require('./app');
 const { BotKitHelper } = require('./botKitHelper');
-
 
 controller.on('ambient', (bot, message) => {
   console.log('PRANKEDUSERS', RobinBot.prankedUsers);
@@ -18,6 +17,10 @@ controller.on('ambient', (bot, message) => {
           bot.reply(message, reply);
 
         } else {
+          let prankedUser = RobinBot.prankedUser[member.name];
+          if(prankedUser.lastPrankTime === 0) {
+            
+          }
           //randomizer code
         }
         break;

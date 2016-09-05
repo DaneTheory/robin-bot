@@ -97,18 +97,30 @@ controller.on('slash_command', (bot, message) => {
     let splitMsg = msg.split(' ');
     let pranked = splitMsg[1] ? splitMsg[1].replace('@', '').toLowerCase() : '';
 
-    console.log('PRANKEDMSG???', splitMsg);
-
     if(splitMsg[0] === 'PRANK' && splitMsg[1]) {
       if(!RobinBot.prankedUsers.hasOwnProperty(pranked)) {
+        reply.private = `Holy Prankster! I've added ${pranked} to my list!`;
         RobinBot.prankedUsers[pranked] = {
           lastPrankTime: 0,
+          nextPrankTime: 0,
+          prankerID: message.user,
           lastPrankMessage: ''
         };
+      } else {
+        reply.private = `Holy Confusion! ${pranked} is already on my list!`;
       }
 
     } else if(splitMsg[0] === 'FORGIVE' && splitMsg[1]) {
-      delete RobinBot.prankedUsers[pranked];
+      if(RobinBot.prankedUsers.hasOwnProperty(pranked)) {
+        if(message.user === RobinBot.prankedUsers[pranked].prankerID) {
+          reply.private = `Holy Prankster! ${pranked} has been removed from my list!`;
+          delete RobinBot.prankedUsers[pranked];
+        } else {
+          reply.private = 'Holy Prankster! Only the person that pranked you can remove you from my list!';
+        }
+      } else {
+        reply.private = `Holy Prankster! ${pranked} isn't on my list!`;
+      }
 
     } else {
       reply.private = 'Holy Try Again! Send an empty message or A-Z!';
@@ -126,4 +138,4 @@ controller.on('slash_command', (bot, message) => {
 });
 
 module.exports = { controller, bot, RobinBot };
-require('./prank.js');
+require('./prank');
