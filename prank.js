@@ -5,10 +5,8 @@ const { BotKitHelper } = require('./botKitHelper');
 controller.on('ambient', (bot, message) => {
   console.log('PRANKEDUSERS', RobinBot.prankedUsers);
   BotKitHelper.getPrankedMembers(RobinBot.prankedUsers).then((members) => {
-    console.log('MEMBERS', members.length);
     for(let [, member] of members.entries()) {
       if(message.user === member.id) {
-        console.log('TRUE!');
 
         let lowerMsg = message.text.toLowerCase();
 

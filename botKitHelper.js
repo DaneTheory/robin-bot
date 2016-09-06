@@ -23,21 +23,26 @@ const BotKitHelper =  {
     });
   },
 
-  getPrankedMembers(prankedMemberList) {
+  getPrankedMembers(prankedMemberList, byMemberID = null) {
     return this.getMembers().then((members) => {
-      let filteredMembers = members.filter((member) => {
+      return members.filter((member) => {
         if(prankedMemberList.hasOwnProperty(member.name)) {
           member.prankData = prankedMemberList[member.name];
 
-          return true;
+          if(!byMemberID || member.prankData.prankerID === byMemberID) {
+            return true;
+          }
         }
 
         return false;
       });
-
-      return filteredMembers;
-
     }, (err) => console.error(err));
+  },
+
+  getMemberByID(memberID) {
+    return this.getMembers().then((members) => {
+      return members.filter((member) => memberID === member.id);
+    });
   }
 };
 
