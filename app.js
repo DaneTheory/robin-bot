@@ -111,13 +111,20 @@ controller.on('slash_command', (bot, message) => {
       switch (splitMsg[0]) {
       case 'PRANK':
         if(!RobinBot.prankedUsers.hasOwnProperty(pranked)) {
-          reply.private = `Holy Prankster! I've added ${pranked} to my list!`;
-          RobinBot.prankedUsers[pranked] = {
-            lastPrankTime: 0,
-            nextPrankTime: 0,
-            prankerID: message.user,
-            lastPrankMessage: ''
-          };
+          BotKitHelper.getMemberByName(pranked).then((prankedMember) => {
+            if(prankedMember) {
+              RobinBot.prankedUsers[pranked] = {
+                lastPrankTime: 0,
+                nextPrankTime: 0,
+                prankerID: message.user,
+                lastPrankMessage: ''
+              };
+              bot.replyPrivateDelayed(message, `Holy Prankster! I've added ${pranked} to my list!`);
+            } else {
+              bot.replyPrivateDelayed(message, `Holy Blank Cartridge! ${pranked} isn\'t a member!`);
+            }
+          });
+
         } else {
           reply.private = `Holy Confusion! ${pranked} is already on my list!`;
         }
