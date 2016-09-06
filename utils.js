@@ -39,4 +39,4 @@ for(let [objectType, object] of Object.entries(Extension)) {
   Object.defineProperties(global[objectType].prototype, object);
 }
 
-module.export = { Utils };
+module.exports = { Utils };
