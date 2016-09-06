@@ -122,11 +122,11 @@ controller.on('slash_command', (bot, message) => {
             reply.private = 'Holy Prankster! Only the person that pranked you can remove you from my list!';
           }
         } else if(pranked === 'all') {
-          let forgiveAllReply = 'Holy Holiness! Users removed from the prank list: \n';
-          console.log('ALL_PRANKED', RobinBot.prankedUsers);
+          let forgiveAllReply = 'Holy Holiness! Users removed from the prank list: ';
+
           for(let [prankedName, prankedObject] of Object.entries(RobinBot.prankedUsers)) {
             if(message.user === prankedObject.prankerID) {
-              forgiveAllReply += prankedName + ' \n';
+              forgiveAllReply += prankedName + ' ';
               delete RobinBot.prankedUsers[prankedName];
             }
           }
