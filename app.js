@@ -82,6 +82,8 @@ controller.on('slash_command', (bot, message) => {
   bot.res.send(200, '');
 
   let msg = message.text.toUpperCase();
+  let splitMsg = msg.split(' ');
+  let pranked = splitMsg[1] ? splitMsg[1].replace('@', '').toLowerCase() : '';
   let reply = {};
 
   if(RobinBot.exclamationsByLetter.hasOwnProperty(msg)) {
@@ -93,10 +95,18 @@ controller.on('slash_command', (bot, message) => {
   } else if(msg._isSingleLetter()) {
     reply.private = 'Holy Try Again! I don\'t have any phrases that start with ' + msg + '!';
 
-  } else {
-    let splitMsg = msg.split(' ');
-    let pranked = splitMsg[1] ? splitMsg[1].replace('@', '').toLowerCase() : '';
+  } else if(splitMsg[0] === 'PRANKED') {
+    BotKitHelper.getPrankedMembers(RobinBot.prankedUsers, message.user).then((members) => {
+      if(!members.length) {
+        let reply = 'Holy Backfire! You haven\'t pranked anyone...yet!';
+        return bot.replyPrivateDelayed(message, reply);
+      }
+      let reply = 'Holy Bank Balance! You\'ve pranked : ';
+      reply += members.map((member) => member.name).join(' ');
+      bot.replyPrivateDelayed(message, reply);
+    });
 
+  } else {
     if(pranked) {
       switch (splitMsg[0]) {
       case 'PRANK':
@@ -121,19 +131,20 @@ controller.on('slash_command', (bot, message) => {
             reply.private = 'Holy Prankster! Only the person that pranked you can remove you from my list!';
           }
         } else if(pranked === 'all') {
-          let forgiveAllReply = '';
-          if(RobinBot.prankedUsers._isEmpty) {
-            forgiveAllReply = 'Holy Blonde Mackerel Ash! You haven\'t pranked anyone...yet!'
-          } else {
-            forgiveAllReply = 'Holy Holiness! Users removed from the prank list: ';
-            for(let [prankedName, prankedObject] of Object.entries(RobinBot.prankedUsers)) {
-              if(message.user === prankedObject.prankerID) {
-                forgiveAllReply += prankedName + ' ';
-                delete RobinBot.prankedUsers[prankedName];
-              }
+          BotKitHelper.getPrankedMembers(RobinBot.prankedUsers, message.user).then((members) => {
+            if(!members.length) {
+              let reply = 'Holy Backfire! You haven\'t pranked anyone...yet!';
+              return bot.replyPrivateDelayed(message, reply);
             }
-          }
-          reply.private = forgiveAllReply;
+
+            let reply = 'Holy Holiness! Users removed from the prank list: ';
+            reply += members.map((member) => {
+              delete RobinBot.prankedUsers[member.name];
+              return member.name;
+            }).join(' ');
+
+            bot.replyPrivateDelayed(message, reply);
+          });
         } else {
           reply.private = `Holy Prankster! ${pranked} isn't on my list!`;
         }
@@ -157,4 +168,5 @@ controller.on('slash_command', (bot, message) => {
 });
 
 module.exports = { controller, bot, RobinBot };
+const { BotKitHelper } = require('./botKitHelper');
 require('./prank');
