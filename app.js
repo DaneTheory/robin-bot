@@ -99,7 +99,7 @@ controller.on('slash_command', (bot, message) => {
 
     if(pranked) {
       switch (splitMsg[0]) {
-      case 'PRANK': {
+      case 'PRANK':
         if(!RobinBot.prankedUsers.hasOwnProperty(pranked)) {
           reply.private = `Holy Prankster! I've added ${pranked} to my list!`;
           RobinBot.prankedUsers[pranked] = {
@@ -111,9 +111,8 @@ controller.on('slash_command', (bot, message) => {
         } else {
           reply.private = `Holy Confusion! ${pranked} is already on my list!`;
         }
-      }
         break;
-      case 'FORGIVE': {
+      case 'FORGIVE':
         if(RobinBot.prankedUsers.hasOwnProperty(pranked)) {
           if(message.user === RobinBot.prankedUsers[pranked].prankerID) {
             reply.private = `Holy Prankster! ${pranked} has been removed from my list!`;
@@ -135,10 +134,8 @@ controller.on('slash_command', (bot, message) => {
           reply.private = `Holy Prankster! ${pranked} isn't on my list!`;
         }
         break;
-      }
-      default: {
+      default:
         reply.private = 'Holy Try Again! Send an empty message or A-Z!';
-      }
         break;
 
       }
