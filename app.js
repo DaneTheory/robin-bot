@@ -13,7 +13,7 @@ try {
   RobinBot.tokens = JSON.parse(fs.readFileSync(__dirname + '/private/auth.json'));
   RobinBot.exclamations = JSON.parse(fs.readFileSync(__dirname + '/data/exclamations.json'));
 } catch(error) {
-  RobinBot.authToken = '';
+  RobinBot.tokens = {};
   RobinBot.exclamations = ['Failure'];
   console.log('Missing valid exclamations file or auth token.');
   console.error(error);
