@@ -4,7 +4,7 @@ if(!Object.entries) {
   require('object.entries').shim();
 }
 
-let Extension = {
+const Extension = {
   Array: {
     _randomItem: {
       value: function() {
@@ -21,7 +21,7 @@ let Extension = {
   }
 };
 
-let Utils = {
+const Utils = {
   TIME: {
     ONE: {
       SECOND: 1000,
