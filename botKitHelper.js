@@ -32,7 +32,7 @@ const BotKitHelper =  {
       return filteredMembers;
 
     }, (err) => console.error(err));
-  },
+  }
 };
 
 
