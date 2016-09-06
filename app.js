@@ -121,12 +121,16 @@ controller.on('slash_command', (bot, message) => {
             reply.private = 'Holy Prankster! Only the person that pranked you can remove you from my list!';
           }
         } else if(pranked === 'all') {
-          let forgiveAllReply = 'Holy Holiness! Users removed from the prank list: ';
-
-          for(let [prankedName, prankedObject] of Object.entries(RobinBot.prankedUsers)) {
-            if(message.user === prankedObject.prankerID) {
-              forgiveAllReply += prankedName + ' ';
-              delete RobinBot.prankedUsers[prankedName];
+          let forgiveAllReply = '';
+          if(RobinBot.prankedUsers._isEmpty) {
+            forgiveAllReply = 'Holy Blonde Mackerel Ash! You haven\'t pranked anyone...yet!'
+          } else {
+            forgiveAllReply = 'Holy Holiness! Users removed from the prank list: ';
+            for(let [prankedName, prankedObject] of Object.entries(RobinBot.prankedUsers)) {
+              if(message.user === prankedObject.prankerID) {
+                forgiveAllReply += prankedName + ' ';
+                delete RobinBot.prankedUsers[prankedName];
+              }
             }
           }
           reply.private = forgiveAllReply;

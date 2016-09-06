@@ -18,6 +18,18 @@ const Extension = {
         return /^[a-z]$/i.test(this);
       }
     }
+  },
+  Object: {
+    _isEmpty: {
+      value: function() {
+        for(let key in this) {
+          if(this.hasOwnProperty(key)) {
+            return false;
+          }
+        }
+        return true;
+      }
+    }
   }
 };
 
