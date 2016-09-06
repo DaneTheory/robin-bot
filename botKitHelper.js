@@ -39,9 +39,10 @@ const BotKitHelper =  {
     }, (err) => console.error(err));
   },
 
-  getMemberByID(memberID) {
+  getMemberByName(name) {
+    name = name.toLowerCase();
     return this.getMembers().then((members) => {
-      return members.filter((member) => memberID === member.id);
+      return members.filter((member) => name === member.name)[0];
     });
   }
 };
