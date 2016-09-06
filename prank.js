@@ -17,9 +17,8 @@ controller.on('ambient', (bot, message) => {
           bot.reply(message, reply);
 
         } else {
-          let prankedUser = RobinBot.prankedUser[member.name];
-          if(prankedUser.lastPrankTime === 0) {
-            
+          if(member.prankData.lastPrankTime === 0) {
+
           }
           //randomizer code
         }
