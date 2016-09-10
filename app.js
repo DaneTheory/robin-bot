@@ -10,7 +10,8 @@ const RobinBot = {
 };
 
 try {
-  RobinBot.tokens = JSON.parse(fs.readFileSync(__dirname + '/private/auth.json'));
+  RobinBot.tokens.authToken = process.env.AUTH_TOKEN;
+  RobinBot.tokens.commandVerifyToken = process.env.COMMAND_VERIFY_TOKEN;
   RobinBot.exclamations = JSON.parse(fs.readFileSync(__dirname + '/data/exclamations.json'));
 } catch(error) {
   RobinBot.tokens = {};
