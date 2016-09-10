@@ -17,14 +17,22 @@ class Randomizer {
   tick(key) {
     return new Promise((resolve, reject) => {
       if(this.register.hasOwnProperty(key)) {
-        if(this.register[key].lastTickTime + this.minTime > Date.now()) {
+        const ref = this.register[key];
+
+        const nextMinTime = ref.lastTickTime + this.minTime;
+        const nextMaxTime = ref.lastTickTime + this.maxTime;
+
+        console.log('now = %d, nextMinTime = %d, nextMaxTime = %d', Date.now(), nextMinTime, nextMaxTime);
+        console.log('now < nextMinTime = ', Date.now() < nextMinTime);
+        console.log('now >= nextMaxTime = ', Date.now() >= nextMaxTime);
+>=
+        if(Date.now() < nextMinTime) {
           return reject();
         }
 
-        if(this.register[key].lastTickTime + this.maxTime < Date.now() ||
-              Math.random() < 0.31) {
-          this.register[key].lastTickTime = Date.now();
-          return resolve(this.register[key].meta);
+        if(Date.now() >= nextMaxTime || Math.random() < 0.31) {
+          ref.lastTickTime = Date.now();
+          return resolve(ref.meta);
         }
       }
     });
