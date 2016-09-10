@@ -6,7 +6,8 @@ const logger = require('morgan');
 
 const RobinBot = {
   exclamationsByLetter: {},
-  prankedUsers: {}
+  prankedUsers: {},
+  tokens: {}
 };
 
 try {
