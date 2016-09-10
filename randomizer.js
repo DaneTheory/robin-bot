@@ -25,7 +25,7 @@ class Randomizer {
         console.log('now = %d, nextMinTime = %d, nextMaxTime = %d', Date.now(), nextMinTime, nextMaxTime);
         console.log('now < nextMinTime = ', Date.now() < nextMinTime);
         console.log('now >= nextMaxTime = ', Date.now() >= nextMaxTime);
->=
+
         if(Date.now() < nextMinTime) {
           return reject();
         }
