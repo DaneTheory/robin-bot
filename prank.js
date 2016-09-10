@@ -1,9 +1,9 @@
 const { Utils } = require('./utils');
-const { controller, bot, RobinBot } = require('./app');
+const { controller, bot, RobinBot, PrankedUsers } = require('./app');
 const { BotKitHelper } = require('./botKitHelper');
 
 controller.on('ambient', (bot, message) => {
-  BotKitHelper.getPrankedMembers(RobinBot.prankedUsers).then((members) => {
+  BotKitHelper.getPrankedMembers(PrankedUsers.register).then((members) => {
     for(let [, member] of members.entries()) {
       if(message.user === member.id) {
 
@@ -14,10 +14,10 @@ controller.on('ambient', (bot, message) => {
           bot.reply(message, reply);
 
         } else {
-          if(member.prankData.lastPrankTime === 0) {
-
-          }
-          //randomizer code
+          PrankedUsers.tick(member.name).then(() => {
+            let reply = `Holy ${RobinBot.exclamations._randomItem()}, ${member.profile.first_name}!`;
+            bot.reply(message, reply);
+          });
         }
         break;
       }
@@ -27,12 +27,10 @@ controller.on('ambient', (bot, message) => {
 
 // Refresh member cache
 controller.on('channel_leave', () => {
-  console.log('CHANNEL_LEAVE');
   BotKitHelper.getMembers(true);
 });
 
 controller.on('user_channel_join', () => {
-  console.log('user_channel_join');
   BotKitHelper.getMembers(true);
 });
 

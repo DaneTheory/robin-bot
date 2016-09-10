@@ -27,9 +27,7 @@ const BotKitHelper =  {
     return this.getMembers().then((members) => {
       return members.filter((member) => {
         if(prankedMemberList.hasOwnProperty(member.name)) {
-          member.prankData = prankedMemberList[member.name];
-
-          if(!byMemberID || member.prankData.prankerID === byMemberID) {
+          if(!byMemberID || prankedMemberList[member.name].meta.prankerID === byMemberID) {
             return true;
           }
         }

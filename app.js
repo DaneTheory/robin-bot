@@ -1,13 +1,15 @@
-require('./utils');
-
+const { Utils } = require('./utils');
 const Botkit = require('botkit');
 const fs = require('fs');
 const logger = require('morgan');
+const { Randomizer } = require('./randomizer');
 
 const RobinBot = {
   exclamationsByLetter: {},
-  prankedUsers: {}
+  tokens: {}
 };
+const blah = Utils.TIME.ONE.MINUTE * 2;
+const PrankedUsers = new Randomizer(Utils.TIME.ONE.MINUTE, blah);
 
 try {
   RobinBot.tokens.authToken = process.env.AUTH_TOKEN;
@@ -58,7 +60,8 @@ for(let [, exclamation] of RobinBot.exclamations.entries()) {
   RobinBot.exclamationsByLetter[exclamation[0]].push(exclamation);
 }
 
-controller.setupWebserver(3000, (err, webserver) => {
+controller.setupWebserver(process.env.PORT, (err, webserver) => {
+  console.log('PORT', process.env.PORT);
   webserver.use(logger(logFormat, {
     stream: require('file-stream-rotator').getStream({
       date_format: 'YYYY-MM-DD',
@@ -97,7 +100,7 @@ controller.on('slash_command', (bot, message) => {
     reply.private = 'Holy Try Again! I don\'t have any phrases that start with ' + msg + '!';
 
   } else if(splitMsg[0] === 'PRANKED') {
-    BotKitHelper.getPrankedMembers(RobinBot.prankedUsers, message.user).then((members) => {
+    BotKitHelper.getPrankedMembers(PrankedUsers.register, message.user).then((members) => {
       if(!members.length) {
         let reply = 'Holy Backfire! You haven\'t pranked anyone...yet!';
         return bot.replyPrivateDelayed(message, reply);
@@ -111,15 +114,13 @@ controller.on('slash_command', (bot, message) => {
     if(pranked) {
       switch (splitMsg[0]) {
       case 'PRANK':
-        if(!RobinBot.prankedUsers.hasOwnProperty(pranked)) {
+        if(!PrankedUsers.register.hasOwnProperty(pranked)) {
           BotKitHelper.getMemberByName(pranked).then((prankedMember) => {
             if(prankedMember) {
-              RobinBot.prankedUsers[pranked] = {
-                lastPrankTime: 0,
-                nextPrankTime: 0,
+              PrankedUsers.add(pranked, {
                 prankerID: message.user,
                 lastPrankMessage: ''
-              };
+              });
               bot.replyPrivateDelayed(message, `Holy Prankster! I've added ${pranked} to my list!`);
             } else {
               bot.replyPrivateDelayed(message, `Holy Blank Cartridge! ${pranked} isn\'t a member!`);
@@ -131,15 +132,15 @@ controller.on('slash_command', (bot, message) => {
         }
         break;
       case 'FORGIVE':
-        if(RobinBot.prankedUsers.hasOwnProperty(pranked)) {
-          if(message.user === RobinBot.prankedUsers[pranked].prankerID) {
+        if(PrankedUsers.register.hasOwnProperty(pranked)) {
+          if(message.user === PrankedUsers.getMeta(pranked).prankerID) {
             reply.private = `Holy Prankster! ${pranked} has been removed from my list!`;
-            delete RobinBot.prankedUsers[pranked];
+            PrankedUsers.remove(pranked);
           } else {
             reply.private = 'Holy Prankster! Only the person that pranked you can remove you from my list!';
           }
         } else if(pranked === 'all') {
-          BotKitHelper.getPrankedMembers(RobinBot.prankedUsers, message.user).then((members) => {
+          BotKitHelper.getPrankedMembers(PrankedUsers.register, message.user).then((members) => {
             if(!members.length) {
               let reply = 'Holy Backfire! You haven\'t pranked anyone...yet!';
               return bot.replyPrivateDelayed(message, reply);
@@ -147,7 +148,7 @@ controller.on('slash_command', (bot, message) => {
 
             let reply = 'Holy Holiness! Users removed from the prank list: ';
             reply += members.map((member) => {
-              delete RobinBot.prankedUsers[member.name];
+              PrankedUsers.remove(member.name);
               return member.name;
             }).join(' ');
 
@@ -175,6 +176,6 @@ controller.on('slash_command', (bot, message) => {
 
 });
 
-module.exports = { controller, bot, RobinBot };
+module.exports = { controller, bot, RobinBot, PrankedUsers };
 const { BotKitHelper } = require('./botKitHelper');
 require('./prank');
