@@ -14,10 +14,11 @@ controller.on('ambient', (bot, message) => {
           bot.reply(message, reply);
 
         } else {
+          console.log('CALLING TICK ON', member.name);
           PrankedUsers.tick(member.name).then(() => {
             let reply = `Holy ${RobinBot.exclamations._randomItem()}, ${member.profile.first_name}!`;
             bot.reply(message, reply);
-          });
+          }, (err) => console.log('Something terrible happened.', err));
         }
         break;
       }

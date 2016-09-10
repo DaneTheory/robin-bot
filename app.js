@@ -77,7 +77,6 @@ controller.setupWebserver(process.env.PORT, (err, webserver) => {
 controller.on('tick', () => true);
 
 controller.on('slash_command', (bot, message) => {
-  console.log('onSlashCommand!', message);
 
   if (message.token !== RobinBot.tokens.commandVerifyToken) {
     return bot.res.send(401, 'Unauthorized');
