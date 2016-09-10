@@ -59,7 +59,8 @@ for(let [, exclamation] of RobinBot.exclamations.entries()) {
   RobinBot.exclamationsByLetter[exclamation[0]].push(exclamation);
 }
 
-controller.setupWebserver(3000, (err, webserver) => {
+controller.setupWebserver(process.env.PORT, (err, webserver) => {
+  console.log('PORT', process.env.PORT);
   webserver.use(logger(logFormat, {
     stream: require('file-stream-rotator').getStream({
       date_format: 'YYYY-MM-DD',
